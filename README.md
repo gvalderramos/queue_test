@@ -3,7 +3,7 @@ Queue Test
 
 A queue algorithm test.
 
-Please run ./run docs for more info about the use.
+[Read the documentation.](https://gvalderramos.github.io/queue_test/)
 
 # Run Scripts
 
