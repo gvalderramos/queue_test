@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html lang="English" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>queue_test package &#8212; Queue Test 0.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=514cf933" />
+    
+    <script src="_static/documentation_options.js?v=76184ce0"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Credits" href="authors.html" />
+    <link rel="prev" title="queue_test" href="modules.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="authors.html" title="Credits"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="queue_test"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Queue Test 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">queue_test</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">queue_test package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="queue-test-package">
+<h1>queue_test package<a class="headerlink" href="#queue-test-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-queue_test.cli">
+<span id="queue-test-cli-module"></span><h2>queue_test.cli module<a class="headerlink" href="#module-queue_test.cli" title="Link to this heading">¶</a></h2>
+<p>Console script for managing the command queue.</p>
+<p>This script provides a command-line interface (CLI) to interact with the
+<cite>queue_test.queue</cite> module. Users can add commands to the queue and run
+all queued commands in priority order.</p>
+<dl class="simple">
+<dt>Commands:</dt><dd><p>add: Adds a new command to the queue.
+run: Processes and displays all commands in the queue.</p>
+</dd>
+<dt>Usage:</dt><dd><dl class="simple">
+<dt>Add a command:</dt><dd><p>python cli.py add '{&quot;cmd&quot;: &quot;Task description&quot;, &quot;priority&quot;: 1}'</p>
+</dd>
+<dt>Run the queue:</dt><dd><p>python cli.py run</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="queue_test.cli.add">
+<span class="sig-prename descclassname"><span class="pre">queue_test.cli.</span></span><span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;typer.models.ArgumentInfo</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queue_test/cli.html#add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queue_test.cli.add" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a new command to the queue.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>value (Optional[str]): A JSON string containing the command data.</dt><dd><p>Example: '{&quot;cmd&quot;: &quot;Task description&quot;, &quot;priority&quot;: 1}'</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="queue_test.cli.run">
+<span class="sig-prename descclassname"><span class="pre">queue_test.cli.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/queue_test/cli.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queue_test.cli.run" title="Link to this definition">¶</a></dt>
+<dd><p>Processes and displays all commands in the queue in priority order.</p>
+<p>This function retrieves commands from the queue, prints their details,
+and processes them with a small delay to simulate execution.</p>
+</dd></dl>
+
+</section>
+<section id="module-queue_test.queue">
+<span id="queue-test-queue-module"></span><h2>queue_test.queue module<a class="headerlink" href="#module-queue_test.queue" title="Link to this heading">¶</a></h2>
+<p>queue.py</p>
+<p>This module defines a priority-based command queue system with persistence support.</p>
+<dl>
+<dt>Classes:</dt><dd><p>Command: Represents a command with a string and a priority level.
+Queue: Implements a priority queue with persistence using pickle.</p>
+</dd>
+<dt>Usage:</dt><dd><p>Create a <cite>Queue</cite> object to manage commands. Use <cite>add()</cite> to add commands to the queue, and <cite>next()</cite> 
+to retrieve and remove commands in priority order.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">queue</span><span class="w"> </span><span class="kn">import</span> <span class="n">Queue</span>
+
+<span class="c1"># Create a queue</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+
+<span class="c1"># Add commands to the queue</span>
+<span class="n">q</span><span class="o">.</span><span class="n">add</span><span class="p">({</span><span class="s2">&quot;cmd&quot;</span><span class="p">:</span> <span class="s2">&quot;Start backup&quot;</span><span class="p">,</span> <span class="s2">&quot;priority&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">})</span>
+<span class="n">q</span><span class="o">.</span><span class="n">add</span><span class="p">({</span><span class="s2">&quot;cmd&quot;</span><span class="p">:</span> <span class="s2">&quot;Restart server&quot;</span><span class="p">,</span> <span class="s2">&quot;priority&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+
+<span class="c1"># Process commands in priority order</span>
+<span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">q</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">cmd</span><span class="p">,</span> <span class="n">command</span><span class="o">.</span><span class="n">priority</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>Details:</dt><dd><p>The queue state is persisted to a file (default: <cite>queue.pkl</cite> in the current directory), allowing the 
+queue to retain its state across program executions. Command priorities must be integers between 1 
+and 10, where 1 represents the highest priority.</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="queue_test.queue.Command">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">queue_test.queue.</span></span><span class="sig-name descname"><span class="pre">Command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">priority</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queue_test/queue.html#Command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queue_test.queue.Command" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a command with an associated priority.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="queue_test.queue.Command.cmd">
+<span class="sig-name descname"><span class="pre">cmd</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#queue_test.queue.Command.cmd" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="queue_test.queue.Command.priority">
+<span class="sig-name descname"><span class="pre">priority</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#queue_test.queue.Command.priority" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="queue_test.queue.Queue">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">queue_test.queue.</span></span><span class="sig-name descname"><span class="pre">Queue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">queue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queue_test/queue.html#Queue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queue_test.queue.Queue" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A priority-based queue that supports persistence using pickle.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="queue_test.queue.Queue.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/queue_test/queue.html#Queue.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queue_test.queue.Queue.add" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a new command to the queue. Commands are sorted by priority after being added.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>command (dict): A dictionary with &quot;cmd&quot; (str) and &quot;priority&quot; (int, 1-10) keys.</p>
+</dd>
+<dt>Raises:</dt><dd><p>RuntimeError: If the priority is not between 1-10 or if the dictionary structure is incorrect.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="queue_test.queue.Queue.next">
+<span class="sig-name descname"><span class="pre">next</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#queue_test.queue.Command" title="queue_test.queue.Command"><span class="pre">Command</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/queue_test/queue.html#Queue.next"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queue_test.queue.Queue.next" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves and removes the next command from the queue.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>Optional[Command]: The next command in the queue, or None if the queue is empty.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-queue_test">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-queue_test" title="Link to this heading">¶</a></h2>
+<p>Top-level package for Queue Test.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">queue_test package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-queue_test.cli">queue_test.cli module</a><ul>
+<li><a class="reference internal" href="#queue_test.cli.add"><code class="docutils literal notranslate"><span class="pre">add()</span></code></a></li>
+<li><a class="reference internal" href="#queue_test.cli.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-queue_test.queue">queue_test.queue module</a><ul>
+<li><a class="reference internal" href="#queue_test.queue.Command"><code class="docutils literal notranslate"><span class="pre">Command</span></code></a><ul>
+<li><a class="reference internal" href="#queue_test.queue.Command.cmd"><code class="docutils literal notranslate"><span class="pre">Command.cmd</span></code></a></li>
+<li><a class="reference internal" href="#queue_test.queue.Command.priority"><code class="docutils literal notranslate"><span class="pre">Command.priority</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#queue_test.queue.Queue"><code class="docutils literal notranslate"><span class="pre">Queue</span></code></a><ul>
+<li><a class="reference internal" href="#queue_test.queue.Queue.add"><code class="docutils literal notranslate"><span class="pre">Queue.add()</span></code></a></li>
+<li><a class="reference internal" href="#queue_test.queue.Queue.next"><code class="docutils literal notranslate"><span class="pre">Queue.next()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-queue_test">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="modules.html"
+                          title="previous chapter">queue_test</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="authors.html"
+                          title="next chapter">Credits</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/queue_test.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="authors.html" title="Credits"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="queue_test"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Queue Test 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >queue_test</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">queue_test package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Gabriel Valderramos.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html lang="English" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>queue_test.queue &#8212; Queue Test 0.1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=514cf933" />
+    
+    <script src="../../_static/documentation_options.js?v=76184ce0"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Queue Test 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">queue_test.queue</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for queue_test.queue</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">queue.py</span>
+
+<span class="sd">This module defines a priority-based command queue system with persistence support.</span>
+
+<span class="sd">Classes:</span>
+<span class="sd">    Command: Represents a command with a string and a priority level.</span>
+<span class="sd">    Queue: Implements a priority queue with persistence using pickle.</span>
+
+<span class="sd">Usage:</span>
+<span class="sd">    Create a `Queue` object to manage commands. Use `add()` to add commands to the queue, and `next()` </span>
+<span class="sd">    to retrieve and remove commands in priority order.</span>
+
+<span class="sd">    Example::</span>
+<span class="sd">    </span>
+<span class="sd">        from queue import Queue</span>
+<span class="sd">        </span>
+<span class="sd">        # Create a queue</span>
+<span class="sd">        q = Queue()</span>
+
+<span class="sd">        # Add commands to the queue</span>
+<span class="sd">        q.add({&quot;cmd&quot;: &quot;Start backup&quot;, &quot;priority&quot;: 2})</span>
+<span class="sd">        q.add({&quot;cmd&quot;: &quot;Restart server&quot;, &quot;priority&quot;: 1})</span>
+
+<span class="sd">        # Process commands in priority order</span>
+<span class="sd">        for command in q:</span>
+<span class="sd">            print(command.cmd, command.priority)</span>
+
+<span class="sd">Details:</span>
+<span class="sd">    The queue state is persisted to a file (default: `queue.pkl` in the current directory), allowing the </span>
+<span class="sd">    queue to retain its state across program executions. Command priorities must be integers between 1 </span>
+<span class="sd">    and 10, where 1 represents the highest priority.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+
+<div class="viewcode-block" id="Command">
+<a class="viewcode-back" href="../../queue_test.html#queue_test.queue.Command">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Command</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a command with an associated priority.&quot;&quot;&quot;</span>
+
+    <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">priority</span><span class="p">:</span> <span class="nb">int</span></div>
+
+
+
+<div class="viewcode-block" id="Queue">
+<a class="viewcode-back" href="../../queue_test.html#queue_test.queue.Queue">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Queue</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A priority-based queue that supports persistence using pickle.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queue</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the queue and optionally sets a custom file for persistence.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            queue (Optional[Path]): Path to the file used for queue persistence. Defaults to &#39;queue.pkl&#39; in the current directory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_queue_file</span> <span class="o">=</span> <span class="n">queue</span> <span class="ow">or</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;queue.pkl&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows iteration over the queue by returning commands in order of priority.</span>
+
+<span class="sd">        Yields:</span>
+<span class="sd">            Command: The next command in the queue.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the number of commands in the queue.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The number of commands currently in the queue.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_store</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Saves the current state of the queue to a file using pickle.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queue_file</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">db</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Loads the queue state from a file if it exists.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queue_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queue_file</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">db</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Queue.add">
+<a class="viewcode-back" href="../../queue_test.html#queue_test.queue.Queue.add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a new command to the queue. Commands are sorted by priority after being added.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command (dict): A dictionary with &quot;cmd&quot; (str) and &quot;priority&quot; (int, 1-10) keys.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: If the priority is not between 1-10 or if the dictionary structure is incorrect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;cmd&quot;</span> <span class="ow">in</span> <span class="n">command</span> <span class="ow">and</span> <span class="s2">&quot;priority&quot;</span> <span class="ow">in</span> <span class="n">command</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">command</span><span class="p">[</span><span class="s2">&quot;priority&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Command</span><span class="p">(</span><span class="n">command</span><span class="p">[</span><span class="s2">&quot;cmd&quot;</span><span class="p">],</span> <span class="n">command</span><span class="p">[</span><span class="s2">&quot;priority&quot;</span><span class="p">]))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">priority</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Command priority out of scale&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;It expect a dictionary with &#39;cmd&#39; and &#39;priority&#39; keys. Got </span><span class="si">{</span><span class="n">command</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Queue.next">
+<a class="viewcode-back" href="../../queue_test.html#queue_test.queue.Queue.next">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Command</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves and removes the next command from the queue.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Optional[Command]: The next command in the queue, or None if the queue is empty.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="p">:</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_queue</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_store</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">item</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">Queue Test 0.1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">queue_test.queue</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025, Gabriel Valderramos.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
+    </div>
+  </body>
+</html>
